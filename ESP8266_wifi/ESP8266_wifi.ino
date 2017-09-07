@@ -52,23 +52,22 @@ void returnFail(String msg)
 void handleSubmit()
 {
   if (!server_AP.hasArg("ssid")) return returnFail("BAD ARGS");
-  ssid_Clinet = string2char(server_AP.arg("ssid"));
-  Serial.println(server_AP.arg("ssid"));
-  Serial.println(string2char(server_AP.arg("ssid")));
-  Serial.println(ssid_Clinet);
-  
   if (!server_AP.hasArg("passwd")) return returnFail("BAD ARGS");
-  password_Clinet = string2char(server_AP.arg("passwd"));
-  Serial.println(server_AP.arg("passwd"));
-  Serial.println(string2char(server_AP.arg("passwd")));
-  Serial.println(password_Clinet);
+  
+  String data1 = server_AP.arg("ssid");
+  ssid_Clinet = const_cast<char*>(data1.c_str());  
+  String data2 = server_AP.arg("passwd");
+  password_Clinet = const_cast<char*>(data2.c_str());
   Serial.println("----------------------");
-  Serial.println(server_AP.arg("ssid"));
-  Serial.println(server_AP.arg("passwd"));
+  Serial.print("SSID:");
+  Serial.println(ssid_Clinet);
+  Serial.print("Passwd:");
+  Serial.println(password_Clinet);
   Serial.println("----------------------");
 
   Serial.println("OK");
-  WiFi.begin(string2char(server_AP.arg("ssid")), string2char(server_AP.arg("passwd")));   //
+//  WiFi.begin(string2char(server_AP.arg("ssid")), string2char(server_AP.arg("passwd")));   //
+  WiFi.begin(ssid_Clinet, password_Clinet);   //
   Serial.println("");
   int retry = 0;
   while (WiFi.status() != WL_CONNECTED && retry < 20) {
@@ -98,11 +97,4 @@ void setup() {
 
 void loop() {
   server_AP.handleClient();
-}
-
-char* string2char(String command){
-    if(command.length()!=0){
-        char *p = const_cast<char*>(command.c_str());
-        return p;
-    }
 }
