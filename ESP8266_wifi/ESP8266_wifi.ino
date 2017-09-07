@@ -17,7 +17,7 @@ const char INDEX_HTML[] =
   "<!DOCTYPE html>"
   "<html>"
   " <head>"
-  "    <meta name = \"viewport\" content = \"width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable=0\">"
+  " <meta http-equiv=\"Content-Type\" content=\"text/html; charset=Big5\">"
   "   <title>ESP8266 Web Form Demo</title>"
   "   <style>"
   "     \"body { background-color: #808080; font-family: Arial, Helvetica, Sans-Serif; Color: #000000; }\""
@@ -53,17 +53,22 @@ void handleSubmit()
 {
   if (!server_AP.hasArg("ssid")) return returnFail("BAD ARGS");
   ssid_Clinet = string2char(server_AP.arg("ssid"));
-//  temp.toCharArray(ssid_Clinet, temp.length() + 1);
-
+  Serial.println(server_AP.arg("ssid"));
+  Serial.println(string2char(server_AP.arg("ssid")));
+  Serial.println(ssid_Clinet);
+  
   if (!server_AP.hasArg("passwd")) return returnFail("BAD ARGS");
   password_Clinet = string2char(server_AP.arg("passwd"));
-//  temp.toCharArray(password_Clinet, temp.length() + 1);
-
-  Serial.println(ssid_Clinet);
+  Serial.println(server_AP.arg("passwd"));
+  Serial.println(string2char(server_AP.arg("passwd")));
   Serial.println(password_Clinet);
+  Serial.println("----------------------");
+  Serial.println(server_AP.arg("ssid"));
+  Serial.println(server_AP.arg("passwd"));
+  Serial.println("----------------------");
 
   Serial.println("OK");
-  WiFi.begin(ssid_Clinet, password_Clinet);   //
+  WiFi.begin(string2char(server_AP.arg("ssid")), string2char(server_AP.arg("passwd")));   //
   Serial.println("");
   int retry = 0;
   while (WiFi.status() != WL_CONNECTED && retry < 20) {
@@ -73,11 +78,7 @@ void handleSubmit()
   }
   Serial.println(WiFi.localIP());
 
-
-
   server_AP.send(200, "text/html", INDEX_HTML);
-
-
 }
 void setup() {
   delay(1000);
